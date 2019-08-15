@@ -2,11 +2,16 @@ package com.leave.dao.impl;
 import com.leave.controller.tools;
 import com.leave.dao.adminInfoDao;
 import com.leave.model.AdminInfo;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Repository("adminInfoDaoImpl")
+@Scope(value = "property")
 public class adminInfoDaoImpl implements adminInfoDao {
     /**
      *  根据sql语句查询AdminInfo表

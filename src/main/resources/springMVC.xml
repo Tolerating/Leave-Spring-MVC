@@ -18,5 +18,14 @@
     <mvc:resources mapping="/Content/**" location="/Content/"/>
     <mvc:resources mapping="/fonts/**" location="/fonts/"/>
     <mvc:resources mapping="/Scripts/**" location="/Scripts/"/>
+    <!--  配置拦截器  -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--  要拦截的方法  -->
+            <mvc:mapping path="/leave/*"/>
+            <!--  配置拦截器对象 -->
+            <bean class="com.leave.filter.sessionFilter"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
 </beans>

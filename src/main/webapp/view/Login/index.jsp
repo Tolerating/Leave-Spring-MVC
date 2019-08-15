@@ -47,7 +47,7 @@
         <div class="form-group">
           <button id="btnLogin" type="button" class="btn btn-primary form-control" onclick="loginLeave()">登录</button>
         </div>
-        <a href="./ForgetPwd.jsp" style="float:right">忘记密码?</a>
+        <a href="/ForgetPwd" style="float:right">忘记密码?</a>
       </form>
     </div>
   </div>
@@ -86,12 +86,12 @@
     } else {
       var pwd = $.md5(userPwd);
       $.ajax({
-        url:'http://localhost:8080/login',
+        url:'/leave/loginLeave',
         type: "POST",
-        contentType: "application/x-www-form-urlencoded;charset=utf-8",
+        // contentType: "application/json",
+        contentType : "application/x-www-form-urlencoded",
         datatype: "json",
-        data: {Name:username ,Pwd: pwd,oper:"loginLeave"},
-        //data:"{Name:'"+username+"'}",
+        data: {Name:username ,Pwd: pwd},
         success: function (data, textstatus, jqXHR) {
           console.log(data)
           if (data == -1) {
