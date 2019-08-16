@@ -1,6 +1,6 @@
 package com.leave.dao.impl;
 import com.leave.controller.tools;
-import com.leave.dao.classDao;
+import com.leave.dao.ClassDao;
 import com.leave.model.Class;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Repository("classDaoImpl")
-public class classDaoImpl implements classDao {
+public class ClassDaoImpl implements ClassDao {
 
     public Class SelectBySql(String sql) throws SQLException {
         Statement smt = null;

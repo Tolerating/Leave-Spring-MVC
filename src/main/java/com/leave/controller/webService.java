@@ -1,10 +1,13 @@
 package com.leave.controller;
 
 import com.leave.model.*;
-import com.leave.service.impl.adminInfoServiceImpl;
-import com.leave.service.impl.classServiceImpl;
-import com.leave.service.impl.studentsServiceImpl;
+import com.leave.service.AdminInfoService;
+
+import com.leave.service.ClassService;
+import com.leave.service.StudentsService;
 import net.sf.json.JSONObject;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
@@ -24,35 +26,38 @@ import java.util.Date;
 @Controller
 @RequestMapping("/leave")
 public class webService {
-    private final static Logger logger = Logger.getLogger(webService.class);
 
-    private adminInfoServiceImpl lgService = new adminInfoServiceImpl();
+    private AdminInfoService lgService;
 
-    private studentsServiceImpl stuService = new studentsServiceImpl();
+    private StudentsService stuService;
 
-    private classServiceImpl classService = new classServiceImpl();
+    private ClassService classService;
+
+    {
+        ApplicationContext atx = new ClassPathXmlApplicationContext("spring.xml");
+        this.lgService = (AdminInfoService)atx.getBean("adminInfoServiceImpl");
+        this.stuService = (StudentsService)atx.getBean("studentsServiceImpl");
+        this.classService = (ClassService)atx.getBean("classServiceImpl");
+    }
 
     @RequestMapping(value = "/loginLeave",method = RequestMethod.POST)
     @ResponseBody
-    public String loginLeave(@RequestParam(name = "Name")String Name, @RequestParam(name = "Pwd")String Pwd){
+    public String loginLeave(@RequestParam(name = "Name")String Name, @RequestParam(name = "Pwd")String Pwd,HttpServletRequest req){
         System.out.println(Name);
         System.out.println(Pwd);
         String result = "";
         AdminInfo model = lgService.loginLeave(Name,Pwd);
         JSONObject obj = JSONObject.fromObject(model);
         System.out.println(obj.toString());
-        logger.debug(Name +"发起登录请求");
         if (model.getAdminID() == 0)
         {
-            logger.debug(Name+"登录失败");
             result = "-1";
         }
         else
         {
-            logger.debug(model.getAdminName()+"登录成功");
             result = "1";
-//            HttpSession session = req.getSession(true);
-//            session.setAttribute("AdminInfo",model);
+            HttpSession session = req.getSession(true);
+            session.setAttribute("AdminInfo",model);
 //            AdminInfo ad = (AdminInfo)session.getAttribute("AdminInfo");
 //            System.out.println(ad.getAdminName());
         }
@@ -66,8 +71,9 @@ public class webService {
      * @return String
      * @throws IOException
      */
-    @RequestMapping("/forgetPwd")
-    public String forgetPwd(String studentNum,@RequestParam(required = false) HttpServletRequest req) throws IOException{
+    @RequestMapping(value = "/forgetPwd",method = RequestMethod.POST)
+    @ResponseBody
+    public String forgetPwd(@RequestParam(name = "studentNum")String studentNum,HttpServletRequest req) throws IOException{
         int code = (int)((Math.random()*9+1)*1000);
         System.out.println(code);
         HttpSession session = req.getSession(true);
@@ -77,12 +83,10 @@ public class webService {
         Students stu = stuService.getInfoByStudentNum(Integer.parseInt(studentNum));
         String phone = stu.getStudentTel();
         String result = "";
-        if (phone != "" || phone != null){
-            logger.debug(studentNum + "修改密码成功");
+        if (!phone.equals("")){
             result = "1";
 
         }else{
-            logger.debug(studentNum + "修改密码失败");
             result = "-7";
         }
        return result;
@@ -96,8 +100,9 @@ public class webService {
      * @return String
      * @throws IOException
      */
-    @RequestMapping("/checkCode")
-    public String checkCode(String Code,String studentNum,@RequestParam(required = false) HttpServletRequest req) throws IOException{
+    @RequestMapping(value = "/checkCode",method = RequestMethod.POST)
+    @ResponseBody
+    public String checkCode(@RequestParam(name = "Code")String Code,@RequestParam(name = "studentNum")String studentNum,HttpServletRequest req) throws IOException{
         String reqCode = req.getParameter("Code");
         HttpSession session = req.getSession(true);
         String code = session.getAttribute("code").toString();
@@ -105,12 +110,10 @@ public class webService {
         String result = "";
         if (!reqCode.equals(code))
         {
-            logger.debug(studentNum+"验证码错误");
             result = "-1";
         }else if(!studentNum.equals(num)){
             result = "-2";
         }else{
-            logger.debug(studentNum+"验证码正确");
             result = "1";
         }
         session.removeAttribute("code");
@@ -123,19 +126,18 @@ public class webService {
      * @param resp HttpServletResponse
      * @throws IOException
      */
-    private void  updatePwd(HttpServletRequest req,HttpServletResponse resp) throws IOException, SQLException {
+    @RequestMapping(value = "/updatePwd",method = RequestMethod.POST)
+    @ResponseBody
+    public String updatePwd(HttpServletRequest req,HttpServletResponse resp) throws IOException, SQLException {
         String studentNum = req.getParameter("studentNum");
         String pwd = req.getParameter("passnew");
         String result = "-1";
         if (lgService.updatePassword(studentNum,pwd) > 0){
             if (stuService.updatePwdByAdminInfo(studentNum) > 0){
-                logger.debug(studentNum+"成功更新了密码");
                 result = "1";
             }
         }
-        Writer out = resp.getWriter();
-        out.write(result);
-        out.flush();
+        return result;
     }
 
     /**
@@ -143,16 +145,15 @@ public class webService {
      * @param req HttpServletRequest
      * @param resp HttpServletResponse
      */
-    private void getStudentInfo(HttpServletRequest req,HttpServletResponse resp) throws IOException {
+    @RequestMapping(value = "/getStudentInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public String getStudentInfo(HttpServletRequest req,HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession(true);
         AdminInfo admin = (AdminInfo)session.getAttribute("AdminInfo");
-        //int studentNum = Integer.parseInt(req.getParameter("studentNum"));
         System.out.println(admin.getAdminName());
         Students stu = stuService.getInfoByStudentNum(admin.getAdminLoginID());
         JSONObject obj = JSONObject.fromObject(stu);
-        Writer out = resp.getWriter();
-        out.write(obj.toString());
-        out.flush();
+        return obj.toString();
     }
 
     /**
@@ -163,8 +164,9 @@ public class webService {
      * @throws IOException
      * @throws SQLException
      */
-    @RequestMapping("/getClassInfo")
-    public String getClassInfo(String classID,@RequestParam(required = false) HttpServletRequest req) throws IOException, SQLException {
+    @RequestMapping(value = "/getClassInfo",method = RequestMethod.GET)
+    @ResponseBody
+    public String getClassInfo(@RequestParam(name = "classID")String classID,HttpServletRequest req) throws IOException, SQLException {
         com.leave.model.Class cla = classService.getClassInfoByClassID(classID);
         JSONObject obj = JSONObject.fromObject(cla);
        return obj.toString();
@@ -175,15 +177,15 @@ public class webService {
      * @param req HttpServletRequest
      * @param resp HttpServletResponse
      */
-    private void updateStudentTel(HttpServletRequest req,HttpServletResponse resp) throws IOException {
+    @RequestMapping(value = "/updateStudentTel",method = RequestMethod.POST)
+    @ResponseBody
+    public String updateStudentTel(HttpServletRequest req,HttpServletResponse resp) throws IOException {
         String stuTel = req.getParameter("StuTel");
         String stuNum = req.getParameter("StuNum");
         int result = stuService.updateStuTel(stuTel,stuNum);
         System.out.println(result);
         System.out.println(Integer.toString(result));
-        Writer out = resp.getWriter();
-        out.write(Integer.toString(result));
-        out.flush();
+       return Integer.toString(result);
     }
 
     /**
@@ -192,7 +194,9 @@ public class webService {
      * @param resp HttpServletResponse
      * @throws IOException
      */
-    private void selectAdvanceDelay(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    @RequestMapping(value = "/selectAdvanceDelay",method = RequestMethod.POST)
+    @ResponseBody
+    public String selectAdvanceDelay(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/plain;charset=utf-8");
         HttpSession session = req.getSession(true);
         AdminInfo admin = (AdminInfo)session.getAttribute("AdminInfo");
@@ -212,9 +216,7 @@ public class webService {
         }else{
             result = "3";
         }
-        Writer out = resp.getWriter();
-        out.write(result);
-        out.flush();
+       return result;
 
     }
 
@@ -224,7 +226,9 @@ public class webService {
      * @param resp HttpServletResponse
      * @throws IOException
      */
-    private void insertLeaveRecord(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+    @RequestMapping(value = "/insertLeaveRecord",method = RequestMethod.POST)
+    @ResponseBody
+    public String insertLeaveRecord(HttpServletRequest req,HttpServletResponse resp) throws IOException{
         String data = req.getParameter("Data");
         String studentName = req.getParameter("StudentName");
         String teacherId = req.getParameter("TeacherID");
@@ -253,9 +257,7 @@ public class webService {
         }else{
             result = "-1";
         }
-        Writer out = resp.getWriter();
-        out.write(result);
-        out.flush();
+       return result;
     }
 
     /**
@@ -264,14 +266,14 @@ public class webService {
      * @param resp HttpServletResponse
      * @throws IOException
      */
-    private void InsertWeekDays(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+    @RequestMapping(value = "/InsertWeekDays",method = RequestMethod.POST)
+    @ResponseBody
+    public String InsertWeekDays(HttpServletRequest req,HttpServletResponse resp) throws IOException{
         String data = req.getParameter("Data");
         JSONObject jsonObject = JSONObject.fromObject(data);
         WeekDays week = (WeekDays)JSONObject.toBean(jsonObject,WeekDays.class);
         int result = stuService.InsertWeekDays(week);
-        Writer out = resp.getWriter();
-        out.write(Integer.toString(result));
-        out.flush();
+        return Integer.toString(result);
     }
 
     /**
@@ -280,15 +282,15 @@ public class webService {
      * @param resp HttpServletResponse
      * @throws IOException
      */
-    private void checkWeekLeave(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+    @RequestMapping(value = "/checkWeekLeave",method = RequestMethod.POST)
+    @ResponseBody
+    public String checkWeekLeave(HttpServletRequest req,HttpServletResponse resp) throws IOException{
         HttpSession session = req.getSession(true);
         int studentNum = ((AdminInfo)session.getAttribute("AdminInfo")).getAdminLoginID();
         String startTime = req.getParameter("starttime");
         String endTime = req.getParameter("endtime");
         int result = stuService.checkWeekLeave(startTime,endTime,Integer.toString(studentNum));
-        Writer out = resp.getWriter();
-        out.write(Integer.toString(result));
-        out.flush();
+        return Integer.toString(result);
     }
 
     /**
@@ -297,7 +299,9 @@ public class webService {
      * @param resp HttpServletResponse
      * @throws IOException
      */
-    private void insertIntoAdvanceDelay(HttpServletRequest req,HttpServletResponse resp) throws IOException{
+    @RequestMapping(value = "/insertIntoAdvanceDelay",method = RequestMethod.POST)
+    @ResponseBody
+    public String insertIntoAdvanceDelay(HttpServletRequest req,HttpServletResponse resp) throws IOException{
         String studentNum = req.getParameter("studentNum");
         String advanceReson = req.getParameter("advanceReson");
         String deatReson = req.getParameter("deatReson");
@@ -346,8 +350,6 @@ public class webService {
         {
             numInto = stuService.updateAdvanceDelay(ad);
         }
-        Writer out = resp.getWriter();
-        out.write(Integer.toString(numInto));
-        out.flush();
+        return Integer.toString(numInto);
     }
 }

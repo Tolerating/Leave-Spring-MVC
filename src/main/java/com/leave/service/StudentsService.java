@@ -1,9 +1,9 @@
-package com.leave.dao;
+package com.leave.service;
 import com.leave.model.*;
 
 import java.sql.SQLException;
 
-public interface studentsDao {
+public interface StudentsService {
     /**
      * 通过学号获取学生信息
      * @param Num 学号
@@ -58,7 +58,7 @@ public interface studentsDao {
     /**
      * 插入早出晚归请假
      * @param model AdvanceDelay
-     * @return int
+     * @return String
      */
     int insertIntoAdvanceDelay(AdvanceDelay model);
 

@@ -185,11 +185,11 @@
     });
     (function () {
         $.ajax({
-            url: "http://localhost:8080/login",
-            type: "POST",
-            contentType: "application/x-www-form-urlencoded",
+            url: "/leave/getStudentInfo",
+            type: "GET",
+            contentType: "application/x-www-form-urlencoded;charset=utf-8",
             dataType: "JSON",
-            data:{oper:"getStudentInfo"},
+            data:{},
             async: false,
             success: function (data, status, jqXHR) {
                 console.log(typeof data)
@@ -199,11 +199,11 @@
                     window.location.href = "../Login/index.jsp";
                 } else{
                     $.ajax({
-                        url: "http://localhost:8080/login",
-                        type: "POST",
+                        url: "/leave/getClassInfo",
+                        type: "GET",
                         contentType: "application/x-www-form-urlencoded;charset=utf-8",
                         dataType: "JSON",
-                        data: {classID: stuInfo.studentClassId,oper:"getClassInfo"},
+                        data: {classID: stuInfo.studentClassId},
                         async:false,
                         success: function (data, status, jqXHR) {
                             classInfo = data;
@@ -259,12 +259,12 @@
                             layer.close(index);
                             layer.load(1);
                             $.ajax({
-                                url: "http://localhost:8080/login",
+                                url: "/leave/updateStudentTel",
                                 type: "POST",
                                 contentType: "application/x-www-form-urlencoded;charset=utf-8",
                                 dataType: "JSON",
                                 async: false,
-                                data: {StuTel:vm.StudentTel,StuNum:vm.StudentNum,oper:"updateStudentTel"},
+                                data: {StuTel:vm.StudentTel,StuNum:vm.StudentNum},
                                 success: function (data, status, jqXHR) {
                                     if (data == "1") {
                                         setTimeout(function () {
@@ -307,12 +307,12 @@
                     layer.msg('两次输入的密码不一致', { icon: 5 });
                 } else {
                     $.ajax({
-                        url: "http://localhost:8080/login",
+                        url: "/leave/updatePwd",
                         type: "POST",
                         contentType: "application/x-www-form-urlencoded;charset=utf-8",
                         dataType: "JSON",
                         async: false,
-                        data: {studentNum:this.StudentNum,passnew:$.md5(this.new2AdnminPasssword),oper:"updatePwd"},
+                        data: {studentNum:this.StudentNum,passnew:$.md5(this.new2AdnminPasssword)},
                         success: function (data, status, jqXHR) {
                             if (data == 1) {
                                 layer.alert('密码更新成功', { icon: 0 }, function (index) {

@@ -3,13 +3,13 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.leave.controller.tools;
-import com.leave.dao.studentsDao;
+import com.leave.dao.StudentsDao;
 import com.leave.model.*;
 import org.springframework.stereotype.Repository;
 import sun.util.calendar.BaseCalendar;
 
 @Repository("studentsDaoImpl")
-public class studentsDaoImpl implements studentsDao {
+public class StudentsDaoImpl implements StudentsDao {
     /**
      *  根据SQL语句查询Students表
      * @param sql sql语句

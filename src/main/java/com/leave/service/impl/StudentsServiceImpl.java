@@ -1,16 +1,21 @@
 package com.leave.service.impl;
-import com.leave.dao.impl.studentsDaoImpl;
+import com.leave.dao.StudentsDao;
 import com.leave.model.*;
-import com.leave.service.studentsService;
+import com.leave.service.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 
 @Service("studentsServiceImpl")
-public class studentsServiceImpl implements studentsService {
+public class StudentsServiceImpl implements StudentsService {
+
+    private StudentsDao stuDao;
+
     @Autowired
-    private studentsDaoImpl stuDao;
+    public void setStuDao(StudentsDao stuDao) {
+        this.stuDao = stuDao;
+    }
 
     /**
      * 学生自查当天早出晚归情况

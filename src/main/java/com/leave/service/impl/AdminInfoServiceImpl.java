@@ -1,25 +1,22 @@
 package com.leave.service.impl;
-import com.leave.dao.adminInfoDao;
-import com.leave.dao.impl.adminInfoDaoImpl;
+import com.leave.dao.AdminInfoDao;
 import com.leave.model.AdminInfo;
-import com.leave.service.adminInfoService;
+import com.leave.service.AdminInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 
 @Service("adminInfoServiceImpl")
-public class adminInfoServiceImpl implements adminInfoService {
+public class AdminInfoServiceImpl implements AdminInfoService {
     /**
      * 声明全局的 loginDaoImpl对象
      */
-    private adminInfoDao lgDao;
+    private AdminInfoDao adminInfoDaoImpl;
     @Autowired
-   public void adminInfoDaoImpl(adminInfoDao adminInfoDao){
-        this.lgDao = adminInfoDao;
+   public void adminInfoDaoImpl(AdminInfoDao adminInfoDao){
+        this.adminInfoDaoImpl = adminInfoDao;
     }
-//    adminInfoDaoImpl lgDao = new adminInfoDaoImpl();
 
     /**
      * 用户登录
@@ -29,7 +26,7 @@ public class adminInfoServiceImpl implements adminInfoService {
      */
     @Override
     public AdminInfo loginLeave(String name, String pwd) {
-        return lgDao.loginLeave(name,pwd);
+        return adminInfoDaoImpl.loginLeave(name,pwd);
     }
 
     /**
@@ -39,5 +36,5 @@ public class adminInfoServiceImpl implements adminInfoService {
      * @return int
      */
     @Override
-    public int updatePassword(String name, String pwd) throws SQLException { return lgDao.updatePassword(name,pwd); }
+    public int updatePassword(String name, String pwd) throws SQLException { return adminInfoDaoImpl.updatePassword(name,pwd); }
 }

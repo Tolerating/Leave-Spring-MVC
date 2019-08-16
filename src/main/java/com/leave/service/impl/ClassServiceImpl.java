@@ -1,6 +1,6 @@
 package com.leave.service.impl;
-import com.leave.dao.impl.classDaoImpl;
-import com.leave.service.classService;
+import com.leave.dao.ClassDao;
+import com.leave.service.ClassService;
 import com.leave.model.Class;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,9 +8,14 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 
 @Service("classServiceImpl")
-public class classServiceImpl implements classService {
+public class ClassServiceImpl implements ClassService {
+
+    private ClassDao classDao;
+
     @Autowired
-    private classDaoImpl classDao;
+    public void setClassDao(ClassDao classDao) {
+        this.classDao = classDao;
+    }
 
     /**
      * 根据班级ID获取班级信息

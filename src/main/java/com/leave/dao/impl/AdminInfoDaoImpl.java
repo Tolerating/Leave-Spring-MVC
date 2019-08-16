@@ -1,8 +1,7 @@
 package com.leave.dao.impl;
 import com.leave.controller.tools;
-import com.leave.dao.adminInfoDao;
+import com.leave.dao.AdminInfoDao;
 import com.leave.model.AdminInfo;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -11,14 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Repository("adminInfoDaoImpl")
-@Scope(value = "property")
-public class adminInfoDaoImpl implements adminInfoDao {
+public class AdminInfoDaoImpl implements AdminInfoDao {
+
     /**
      *  根据sql语句查询AdminInfo表
      * @param sql 查询语句
      * @return AdminInfo
      */
-    public AdminInfo SelectBySql(String sql) {
+    public static AdminInfo SelectBySql(String sql) {
         Statement smt = null;
         ResultSet rs = null;
         AdminInfo admin = new AdminInfo();
@@ -38,15 +37,7 @@ public class adminInfoDaoImpl implements adminInfoDao {
         }finally {
             try {
                 rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
                 smt.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();

@@ -73,11 +73,11 @@
             });
         } else {
             $.ajax({
-                url: "http://localhost:8080/login",
+                url: "/forgetPwd",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded;charset=utf-8",
-                data: {studentNum:username,oper:"forgetPwd"},
+                data: {studentNum:username},
                 success: function (data, status, jqXHR) {
                     if (data == -7) {
                         layer.alert('用户名不存在', { icon: 5 }, function (index) {
@@ -112,13 +112,12 @@
             });
         } else {
             $.ajax({
-                url: "http://localhost:8080/login",
+                url: "/checkCode",
                 type: "POST",
                 dataType: "json",
                 contentType: "application/x-www-form-urlencoded;charset=utf-8",
-                data: {studentNum:username,Code:code,oper:"checkCode"},
+                data: {studentNum:username,Code:code},
                 success: function (data, status, jqXHR) {
-                    //console.log(data);
                     if (data == -1) {
                         layer.alert('验证码错误', { icon: 5 }, function (index) {
                             layer.close(index);
@@ -127,7 +126,6 @@
                         layer.msg('用户名错误', { icon: 5 });
                     } else {
                         location.href = "./NewPwd.jsp?id=" + username;
-                        //alert("123");
                     }
                 },
                 error: function (jqXHR, status, error) {

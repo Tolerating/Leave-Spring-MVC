@@ -41,7 +41,8 @@
                         <div class="form-group">
                             <label>工号</label>
                             <i class="fa fa-user"></i>
-                            <input type="text" readonly value="<%= request.getParameter("id") %>" id="userId" name="userId">
+<%--                            <input type="text" readonly value="<%= request.getParameter("id") %>" id="userId" name="userId">--%>
+                            <input type="text" readonly value="${requestScope.username}" id="userId" name="userId">
                         </div>
                         <div class="form-group">
                             <label>新密码</label>
@@ -94,10 +95,10 @@
                     });
                 } else {
                     $.ajax({
-                        url: 'http://localhost:8080/login',
+                        url: '/updatePwd',
                         contentType: "application/x-www-form-urlencoded;charset=utf-8",
                         type: "POST", dataType: "json",
-                        data: {studentNum:username ,passnew:$.md5(this.pwdtwo),oper:"updatePwd"},
+                        data: {studentNum:username ,passnew:$.md5(this.pwdtwo)},
                         success: function (data) {
                             console.log(data);
                             if (data == 1) {

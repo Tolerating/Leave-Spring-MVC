@@ -1,11 +1,12 @@
 package com.leave.controller;
 
+import com.leave.model.AdminInfo;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import java.sql.Connection;
-import java.sql.DriverManager;
+
+import java.sql.*;
 
 public class tools {
 
@@ -109,4 +110,6 @@ public class tools {
         }
         return conn;
     }
+
+
 }

@@ -509,8 +509,8 @@
                         , yes: function (index) {
                             layer.close(index);
                             $.ajax({
-                                url: 'http://localhost:8080/login', contentType: "application/x-www-form-urlencoded;charset=UTF-8", type: "POST", dataType: "json",
-                                data: {Data:leaveRecordobj,TeacherID:vm.ClassHeadTeacherID,StudentName:vm.StudentName,oper:"insertLeaveRecord"},
+                                url: '/leave/insertLeaveRecord', contentType: "application/x-www-form-urlencoded;charset=UTF-8", type: "POST", dataType: "json",
+                                data: {Data:leaveRecordobj,TeacherID:vm.ClassHeadTeacherID,StudentName:vm.StudentName},
                                 success: function (data,status,jqXHR) {
                                     if (data > "0") {
                                         layer.alert('提交请假单成功', { icon: 1 }, function (index) {
@@ -551,11 +551,11 @@
                     });
                 } else {
                     $.ajax({
-                        url: 'http://localhost:8080/login',
+                        url: '/leave/checkWeekLeave',
                         contentType: "application/x-www-form-urlencoded;charset=utf-8",
                         dataType:"json",
                         type: "POST",
-                        data: {starttime:weekdayStartTime,endtime:weekdayEndTime,oper:"checkWeekLeave"},
+                        data: {starttime:weekdayStartTime,endtime:weekdayEndTime},
                         async:false,
                         success: function (data,status,jqXHR) {
                             if (data == "0") {
@@ -604,7 +604,7 @@
                                     , yes: function (index) {
                                         layer.close(index);
                                         $.ajax({
-                                            url: 'http://localhost:8080/login', contentType: "application/x-www-form-urlencoded", type: "POST", dataType: "json",
+                                            url: '/leave/InsertWeekDays', contentType: "application/x-www-form-urlencoded", type: "POST", dataType: "json",
                                             data: {Data:weekdayLeaveobj,oper:"InsertWeekDays"},
                                             success: function (data) {
                                                 if (data == "1") {
@@ -674,8 +674,8 @@
                         , yes: function (index) {
                             layer.close(index);
                             $.ajax({
-                                url: 'http://localhost:8080/login', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
-                                data: {Data:notStayLeaveobj,TeacherID:vm.ClassHeadTeacherID,StudentName:vm.StudentName,oper:"insertLeaveRecord"},
+                                url: '/leave/insertLeaveRecord', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
+                                data: {Data:notStayLeaveobj,TeacherID:vm.ClassHeadTeacherID,StudentName:vm.StudentName},
                                 success: function (data,status,jqXHR) {
                                     if (data > "0") {
                                         layer.alert('提交请假单成功', { icon: 1 }, function (index) {
@@ -735,8 +735,8 @@
                         , yes: function (index) {
                             layer.close(index);
                             $.ajax({
-                                url: 'http://localhost:8080/login', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
-                                data: {Data:earlySelfStuLeaveobj,TeacherID:vm.ClassHeadTeacherID ,StudentName:vm.StudentName,oper:"insertLeaveRecord"},
+                                url: '/leave/insertLeaveRecord', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
+                                data: {Data:earlySelfStuLeaveobj,TeacherID:vm.ClassHeadTeacherID ,StudentName:vm.StudentName},
                                 success: function (data, status, jqXHR) {
                                     if (data > "0") {
                                         layer.alert('提交请假单成功', { icon: 1 }, function (index) {
@@ -838,7 +838,7 @@
                     , yes: function (index) {
                         layer.close(index);
                         $.ajax({
-                            url: 'http://localhost:8080/login', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
+                            url: '/leave/insertIntoAdvanceDelay', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
                             data:{
                                 studentNum:vm.StudentNum,
                                 advanceReson:vm.arriveEarlyReason,
@@ -846,8 +846,7 @@
                                 advanceStudentT:ZTIME,
                                 delayStudentT:WTIME,
                                 classNum:vm.classID,
-                                arriveCategory:vm.arriveCategory,
-                                oper:"insertIntoAdvanceDelay"
+                                arriveCategory:vm.arriveCategory
                             },
                             success: function (data) {
                                 if (data == "1") {
@@ -912,10 +911,9 @@
             AdvanceDelay: function () {
                 let timenow = new Date();
                 $.ajax({
-                    url: 'http://localhost:8080/login', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "text",
-                    data: {StudetnID:vm.StudentNum,oper:"selectAdvanceDelay"},
+                    url: '/leave/selectAdvanceDelay', contentType: "application/x-www-form-urlencoded;charset=utf-8", type: "POST", dataType: "json",
+                    data: {StudetnID:vm.StudentNum},
                     success: function (data) {
-                        //window.location.href="../Login/index.jsp";
                         console.log(data)
                         let dt = data.toString().split("&");
                         console.log(dt);

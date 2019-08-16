@@ -1,9 +1,9 @@
-package com.leave.dao;
+package com.leave.service;
 import com.leave.model.Class;
 
 import java.sql.SQLException;
 
-public interface classDao {
+public interface ClassService {
 
     /**
      *  根据班级ID获取班级信息

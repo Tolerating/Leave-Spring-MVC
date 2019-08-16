@@ -88,7 +88,6 @@
       $.ajax({
         url:'/leave/loginLeave',
         type: "POST",
-        // contentType: "application/json",
         contentType : "application/x-www-form-urlencoded",
         datatype: "json",
         data: {Name:username ,Pwd: pwd},
