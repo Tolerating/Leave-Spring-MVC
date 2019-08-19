@@ -12,11 +12,13 @@ public class AdminInfoServiceImpl implements AdminInfoService {
     /**
      * 声明全局的 loginDaoImpl对象
      */
-    private AdminInfoDao adminInfoDaoImpl;
+    private AdminInfoDao adminDao;
+
     @Autowired
-   public void adminInfoDaoImpl(AdminInfoDao adminInfoDao){
-        this.adminInfoDaoImpl = adminInfoDao;
+    public void setAdminDao(AdminInfoDao adminDao) {
+        this.adminDao = adminDao;
     }
+
 
     /**
      * 用户登录
@@ -26,7 +28,7 @@ public class AdminInfoServiceImpl implements AdminInfoService {
      */
     @Override
     public AdminInfo loginLeave(String name, String pwd) {
-        return adminInfoDaoImpl.loginLeave(name,pwd);
+        return adminDao.loginLeave(name,pwd);
     }
 
     /**
@@ -36,5 +38,5 @@ public class AdminInfoServiceImpl implements AdminInfoService {
      * @return int
      */
     @Override
-    public int updatePassword(String name, String pwd) throws SQLException { return adminInfoDaoImpl.updatePassword(name,pwd); }
+    public int updatePassword(String name, String pwd) throws SQLException { return adminDao.updatePassword(name,pwd); }
 }

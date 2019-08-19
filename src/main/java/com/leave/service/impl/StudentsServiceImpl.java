@@ -10,11 +10,12 @@ import java.sql.SQLException;
 @Service("studentsServiceImpl")
 public class StudentsServiceImpl implements StudentsService {
 
+
     private StudentsDao stuDao;
 
     @Autowired
-    public void setStuDao(StudentsDao stuDao) {
-        this.stuDao = stuDao;
+    public void setStuDao(StudentsDao stu) {
+        this.stuDao = stu;
     }
 
     /**
@@ -23,8 +24,8 @@ public class StudentsServiceImpl implements StudentsService {
      * @return AdvanceDelay
      */
     @Override
-    public AdvanceDelay selectAdvanceDelay(String studentNum) {
-        return stuDao.selectAdvanceDelay(studentNum);
+    public AdvanceDelay selectAdvanceDelay(String studentNum,String dateTimeNow) {
+        return stuDao.selectAdvanceDelay(studentNum,dateTimeNow);
     }
 
     /**

@@ -1,8 +1,9 @@
 package com.leave.dao;
 import com.leave.model.*;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
-
 public interface StudentsDao {
     /**
      * 通过学号获取学生信息
@@ -24,14 +25,14 @@ public interface StudentsDao {
      * @param StuNum 学号
      * @return int
      */
-    int updateStuTel(String StuTel, String StuNum);
+    int updateStuTel(@Param("stuTel") String StuTel, @Param("stuNum")String StuNum);
 
     /**
      * 学生自查当天早出晚归情况
      * @param studentNum 学号
      * @return AdvanceDelay
      */
-    AdvanceDelay selectAdvanceDelay(String studentNum);
+    AdvanceDelay selectAdvanceDelay(@Param("stuNum") String studentNum,@Param("datetime") String dateTimeNow);
 
     /**
      * 查询本周该学生是否未周六日请假
@@ -39,7 +40,7 @@ public interface StudentsDao {
      * @param endtime 请假结束时间
      * @return int
      */
-    int checkWeekLeave(String starttime, String endtime, String studentNum);
+    int checkWeekLeave(@Param("starttime") String starttime, @Param(("endtime")) String endtime, @Param("stuNum") String studentNum);
 
     /**
      * 插入周末请假

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.leave.dao.StudentsDao">
+
+    <select id="getInfoByStudentNum" resultType="com.leave.model.Students">
+        SELECT * FROM [Students] WHERE [StudentNum]=#{Num}
+    </select>
+
+    <update id="updatePwdByAdminInfo">
+        UPDATE [Students] SET
+        [Students].[StudentPass] =c.[AdnminPasssword]
+        from [AdminInfo] ,(select [AdminLoginID],[AdnminPasssword]
+        from [AdminInfo] where [AdminLoginID]=#{Num})as c
+        where [Students].[StudentNum]=c.[AdminLoginID]
+    </update>
+
+    <update id="updateStuTel">
+        update [Students] set [StudentTel]=#{stuTel} where [StudentNum]=#{stuNum}
+    </update>
+
+    <select id="selectAdvanceDelay" resultType="com.leave.model.AdvanceDelay">
+        <bind name="_datetime" value="datetime + '%'"/>
+        SELECT * FROM [AdvanceDelay] WHERE
+        convert(varchar(50),AdvanceTime,120) like #{_datetime} and convert(varchar(50),DelayTime,120) like #{_datetime} and StudentNum=#{stuNum}
+    </select>
+
+    <select id="checkWeekLeave">
+        SELECT COUNT(*) FROM [WeekDays] WHERE
+        WeekDaysStudentID=#{stuNum} and (WeekDaysStartTime between #{starttime} and #{endtime}) and (WeekDaysEndtTime between #{starttime} and #{endtime})
+    </select>
+
+    <insert id="InsertWeekDays" parameterType="com.leave.model.WeekDays">
+        INSERT INTO [WeekDays] ([WeekDaysStudentID],[WeekDaysStartTime],[WeekDaysEndtTime],[WeekDaysNumDays],[WeekDaysReason],[WeekDaysApprover],
+                        [WeekDaysStage],[WeekDaysApprovalResult],[WeekDaysApprovalTime],[LeaveRecordClassNum])
+                        VALUES (#{weekDaysStudentId},#{weekDaysStartTime},#{weekDaysEndtTime},#{weekDaysNumDays},#{weekDaysReason},#{weekDaysApprover},
+                        #{weekDaysStage},#{weekDaysApprovalResult},#{weekDaysApprovalTime},#{leaveRecordClassNum})
+    </insert>
+
+    <insert id="insertLeaveRecord" parameterType="com.leave.model.LeaveRecord">
+        INSERT INTO [LeaveRecord] ([LeaveRecordStudentID],[LeaveRecordReason],[LeaveRecordStartTime],[LeaveRecordEndtTime],[LeaveRecordStartLesson],
+                                    [LeaveRecordEndLesson],[LeaveRecordCategory],[LeaveRecordNumDays],[LeaveRecordApprover],[LeaveRecordStage],
+                                    [LeaveRecordApprovalResult],[LeaveRecordApprovalTime],[LeaveRecordSumLesson],[LeaveRecordClassNum])
+                                    VALUES (#{leaveRecordStudentId},#{leaveRecordReason},#{leaveRecordStartTime},#{leaveRecordEndtTime},#{leaveRecordStartLesson},
+                                            #{leaveRecordEndLesson},#{leaveRecordCategory},#{leaveRecordNumDays},#{leaveRecordApprover},#{leaveRecordStage},
+                                            #{leaveRecordApprovalResult},#{leaveRecordApprovalTime},#{leaveRecordSumLesson},#{leaveRecordClassNum})
+    </insert>
+
+    <insert id="insertIntoAdvanceDelay" parameterType="com.leave.model.AdvanceDelay">
+        INSERT INTO [AdvanceDelay] ([StudentNum],[ClassNum],[AdvanceTime],[AdvanceReson],[AdvanceStudentT],[DelayTime],[DeatReson],[DelayStudentT])
+               VALUES (#{studentNum},#{classNum},#{advanceTime},#{advanceReson},#{advanceStudentT},#{delayTime},#{deatReson},#{delayStudentT})
+    </insert>
+
+    <update id="updateAdvanceDelay" parameterType="com.leave.model.AdvanceDelay">
+        UPDATE [AdvanceDelay] SET [StudentNum] = ISNULL(#{studentNum},[StudentNum]),[ClassNum] = ISNULL(#{classNum},[ClassNum]),[AdvanceTime] = ISNULL(#{advanceTime},[AdvanceTime]),
+                                  [AdvanceReson] = ISNULL(#{advanceReson},[AdvanceReson]),[AdvanceStudentT] = ISNULL(#{advanceStudentT},[AdvanceStudentT]),[DelayTime] = ISNULL(#{delayTime},[DelayTime]),
+                                  [DeatReson] = ISNULL(#{deatReson},[DeatReson]),[DelayStudentT] = ISNULL(#{delayStudentT},[DelayStudentT])
+                              WHERE [ZCWGID]=#{zcwgid};
+    </update>
+
+    <select id="selectTeacherByNum" resultType="com.leave.model.Teachers">
+        SELECT * FROM [Teachers] WHERE [TeacherNum]=#{teacherNum}
+    </select>
+</mapper> 

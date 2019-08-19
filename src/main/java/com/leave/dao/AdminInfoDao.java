@@ -1,7 +1,9 @@
 package com.leave.dao;
 import com.leave.model.AdminInfo;
-import java.sql.SQLException;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
 public interface AdminInfoDao {
     /**
      * 用户登录
@@ -9,7 +11,7 @@ public interface AdminInfoDao {
      * @param pwd 密码
      * @return AdminInfo
      */
-     AdminInfo loginLeave(String name, String pwd);
+     AdminInfo loginLeave(@Param("name") String name, @Param("pwd")String pwd);
 
     /**
      * 更新密码
@@ -17,5 +19,5 @@ public interface AdminInfoDao {
      * @param pwd 密码
      * @return int
      */
-     int updatePassword(String name, String pwd) throws SQLException;
+     int updatePassword(@Param("name")String name, @Param("pwd")String pwd) throws SQLException;
 }

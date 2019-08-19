@@ -1,6 +1,5 @@
 package com.leave.model;
 
-
 public class AdvanceDelay {
 
   private int zcwgid;

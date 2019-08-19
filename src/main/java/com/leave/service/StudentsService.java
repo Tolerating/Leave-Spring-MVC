@@ -31,7 +31,7 @@ public interface StudentsService {
      * @param studentNum 学号
      * @return AdvanceDelay
      */
-    AdvanceDelay selectAdvanceDelay(String studentNum);
+    AdvanceDelay selectAdvanceDelay(String studentNum,String dateTimeNow);
 
     /**
      * 查询本周该学生是否未周六日请假

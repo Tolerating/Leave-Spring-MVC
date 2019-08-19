@@ -1,7 +1,5 @@
 package com.leave.service;
-
 import com.leave.model.AdminInfo;
-
 import java.sql.SQLException;
 
 public interface AdminInfoService {

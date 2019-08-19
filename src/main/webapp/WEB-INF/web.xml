@@ -4,9 +4,20 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <!-- 配置spring的监听器,默认只加载/WEB-INFO目录下的applicationContext.xml -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+<!-- 设置applicationContext.xml的路径 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring.xml</param-value>
+  </context-param>
+<!-- 配置前端控制器 -->
   <servlet>
     <servlet-name>dispatcherServlet</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  <!-- Servlet初始化时加载SpringMVC.xml -->
     <init-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>classpath:springMVC.xml</param-value>
@@ -17,6 +28,7 @@
     <servlet-name>dispatcherServlet</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
+
 <!--  配置解决中文乱码的过滤器-->
   <filter>
     <filter-name>characterEncodingFilter</filter-name>

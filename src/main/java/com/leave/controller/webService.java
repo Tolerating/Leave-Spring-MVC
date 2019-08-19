@@ -6,6 +6,7 @@ import com.leave.service.AdminInfoService;
 import com.leave.service.ClassService;
 import com.leave.service.StudentsService;
 import net.sf.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
@@ -27,18 +28,25 @@ import java.util.Date;
 @RequestMapping("/leave")
 public class webService {
 
+
     private AdminInfoService lgService;
 
-    private StudentsService stuService;
+    @Autowired
+    public void setLgService(AdminInfoService lgService) {
+        this.lgService = lgService;
+    }
 
+    @Autowired
+    private StudentsService stuService;
+    @Autowired
     private ClassService classService;
 
-    {
-        ApplicationContext atx = new ClassPathXmlApplicationContext("spring.xml");
-        this.lgService = (AdminInfoService)atx.getBean("adminInfoServiceImpl");
-        this.stuService = (StudentsService)atx.getBean("studentsServiceImpl");
-        this.classService = (ClassService)atx.getBean("classServiceImpl");
-    }
+//    {
+//        ApplicationContext atx = new ClassPathXmlApplicationContext("spring.xml");
+//        this.lgService = (AdminInfoService)atx.getBean("adminInfoServiceImpl");
+//        this.stuService = (StudentsService)atx.getBean("studentsServiceImpl");
+//        this.classService = (ClassService)atx.getBean("classServiceImpl");
+//    }
 
     @RequestMapping(value = "/loginLeave",method = RequestMethod.POST)
     @ResponseBody
@@ -58,8 +66,8 @@ public class webService {
             result = "1";
             HttpSession session = req.getSession(true);
             session.setAttribute("AdminInfo",model);
-//            AdminInfo ad = (AdminInfo)session.getAttribute("AdminInfo");
-//            System.out.println(ad.getAdminName());
+            AdminInfo ad = (AdminInfo)session.getAttribute("AdminInfo");
+            System.out.println(ad.getAdminName());
         }
         return result;
     }
@@ -200,21 +208,29 @@ public class webService {
         resp.setContentType("text/plain;charset=utf-8");
         HttpSession session = req.getSession(true);
         AdminInfo admin = (AdminInfo)session.getAttribute("AdminInfo");
+        Date date = new Date();
+        SimpleDateFormat sft = new SimpleDateFormat("yyyy-MM-dd");
         String result = "";
-        AdvanceDelay ad = stuService.selectAdvanceDelay(Integer.toString(admin.getAdminLoginID()));
-        System.out.println(ad.getDelayStudentT());
-        if (ad.getZcwgid() != 0){
-            if ( !"".equals(ad.getAdvanceReson()) && "".equals(ad.getDeatReson())){
-                //早出请假
-                result = String.format("1&%s&%s",ad.getAdvanceStudentT(),ad.getAdvanceReson());
-            }else if("".equals(ad.getAdvanceReson()) && !"".equals(ad.getDeatReson())){
-                //晚归请假
-                result = String.format("2&%s&%s",ad.getDelayStudentT(),ad.getDeatReson());
-            }else{
-                result = String.format("0&%s&%s&%s&%s",ad.getAdvanceStudentT(),ad.getAdvanceReson(),ad.getDelayStudentT(),ad.getDeatReson());
-            }
-        }else{
+        AdvanceDelay ad = new AdvanceDelay();
+        System.out.println(sft.format(date));
+        ad = stuService.selectAdvanceDelay(Integer.toString(admin.getAdminLoginID()),sft.format(date));
+        if (ad == null){
             result = "3";
+        }else {
+            System.out.println(ad.getDelayStudentT());
+            if (ad.getZcwgid() != 0) {
+                if (!"".equals(ad.getAdvanceReson()) && "".equals(ad.getDeatReson())) {
+                    //早出请假
+                    result = String.format("1&%s&%s", ad.getAdvanceStudentT(), ad.getAdvanceReson());
+                } else if ("".equals(ad.getAdvanceReson()) && !"".equals(ad.getDeatReson())) {
+                    //晚归请假
+                    result = String.format("2&%s&%s", ad.getDelayStudentT(), ad.getDeatReson());
+                } else {
+                    result = String.format("0&%s&%s&%s&%s", ad.getAdvanceStudentT(), ad.getAdvanceReson(), ad.getDelayStudentT(), ad.getDeatReson());
+                }
+            } else {
+                result = "3";
+            }
         }
        return result;
 
@@ -311,10 +327,10 @@ public class webService {
         String arriveCategory = req.getParameter("arriveCategory");
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+        SimpleDateFormat sft = new SimpleDateFormat("yyyy-MM-dd");
         int numof = 0;
         AdvanceDelay ad = new AdvanceDelay();
-        ad = stuService.selectAdvanceDelay(studentNum);
+        ad = stuService.selectAdvanceDelay(studentNum,sft.format(date));
         if (ad != null){
             numof = ad.getZcwgid();
         }
