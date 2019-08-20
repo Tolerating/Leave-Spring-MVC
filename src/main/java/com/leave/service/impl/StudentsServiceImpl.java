@@ -4,10 +4,12 @@ import com.leave.model.*;
 import com.leave.service.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 
 @Service("studentsServiceImpl")
+@Transactional
 public class StudentsServiceImpl implements StudentsService {
 
 
